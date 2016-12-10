@@ -1,0 +1,20 @@
+[Unit]
+ConditionCapability=CAP_SYS_TIME
+ConditionVirtualization=!container
+DefaultDependencies=no
+Wants=dev-rtc.device
+After=dev-rtc.device
+Before=network.target
+
+[Service]
+Type=oneshot
+CapabilityBoundingSet=CAP_SYS_TIME
+PrivateTmp=yes
+ProtectSystem=full
+ProtectHome=yes
+DeviceAllow=/dev/rtc rw
+DevicePolicy=closed
+ExecStart=/sbin/hwclock --hctosys
+
+[Install]
+WantedBy=time-sync.target

@@ -1,0 +1,25 @@
+diff -ruN technion-lol_dht22-orig/configure.in technion-lol_dht22-b712ad2/configure.in
+--- technion-lol_dht22-orig/configure.in	2014-01-02 06:25:01.000000000 +0100
++++ technion-lol_dht22-b712ad2/configure.in	2015-09-13 14:00:49.905450753 +0200
+@@ -26,8 +26,8 @@
+ AC_HEADER_STDC
+ AC_CHECK_HEADER(wiringPi,wiringpi_h_found=yes)
+ AS_IF([test x$wiringpi_h_found != "xyes"],
+-	AC_CHECK_HEADER([/usr/local/include/wiringPi.h],
+-		CFLAGS="${CFLAGS} -I/usr/local/include",
++	AC_CHECK_HEADER([/usr/include/wiringPi.h],
++		CFLAGS="${CFLAGS} -I/usr/include",
+ 		AC_MSG_ERROR(Fail to find wiringPi.h)
+ 	)
+ )
+diff -ruN technion-lol_dht22-orig/Makefile.am technion-lol_dht22-b712ad2/Makefile.am
+--- technion-lol_dht22-orig/Makefile.am	2014-01-02 06:25:01.000000000 +0100
++++ technion-lol_dht22-b712ad2/Makefile.am	2015-09-13 14:00:22.405515228 +0200
+@@ -1,5 +1,5 @@
+-bin_PROGRAMS = loldht
+-loldht_SOURCES = dht22.c locking.c
++bin_PROGRAMS = dht22
++dht22_SOURCES = dht22.c locking.c
+ AUTOMAKE_OPTIONS = foreign
+ 
+ noinst_HEADERS = 
