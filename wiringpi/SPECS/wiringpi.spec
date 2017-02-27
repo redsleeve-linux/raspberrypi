@@ -1,10 +1,10 @@
 # Actually the date is the packaging date not the commit date
-%global commit_date  20150607
-%global commit_short 5edd177
-%global commit_long  5edd177112c99416f68ba3e8c6c4db6ed942e796
+%global commit_date  20170227
+%global commit_short 70fa99a
+%global commit_long  70fa99a127ff150ee2b0975afe5be9547ddb44e3
 
 Name:           wiringpi
-Version:        2.25
+Version:        2.40
 Release:        0.%{commit_date}git%{commit_short}.redsleeve
 Summary:        WiringPi is a Wiring library written in C and should be usable from C++.
 
@@ -72,6 +72,9 @@ rm -rf %{buildroot}
 %doc examples pins/pins.pdf
 
 %changelog
+* Mon Feb 27 2017 Jacco Ligthart <jacco@redsleeve.org> - 2.40-0
+- updated to version 2.4 to support kernels 4.8+
+
 * Sun Jun 07 2015 Jacco Ligthart <jacco@redsleeve.org> - 2.25-0
 - Build for 2.25
 
