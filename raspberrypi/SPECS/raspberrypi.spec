@@ -1,10 +1,10 @@
-%global commit_firmware_short bf5201e
-%global commit_firmware_long  bf5201e9682bf36370bc31d26b37fd4d84e1cfca
-%global commit_linux_short 883de20
-%global commit_linux_long  883de20e54e16f89a878c9957fd265e352ebf5c3
+%global commit_firmware_short 78c4983
+%global commit_firmware_long  78c4983379de0537f49a97fb37ceaaf42632b28c
+%global commit_linux_short 935c7ce
+%global commit_linux_long  935c7ce84c982a26f567a03a58a1537424569938
 
 %define Arch arm
-%define extra_version 1
+%define extra_version 2
 
 Name:           raspberrypi
 Version:        4.9.13
@@ -183,6 +183,9 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|tail -1)/boot/overlays/*.dtb* /boot/o
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Mon Mar 06 2017 Jacco Ligthart <jacco@redsleeve.org> - 4.9.13-v7.2.el7
+- updated to support the pi zero W
+
 * Mon Feb 27 2017 Jacco Ligthart <jacco@redsleeve.org> - 4.9.13-v7.1.el7
 - update to version 4.9.13
 
