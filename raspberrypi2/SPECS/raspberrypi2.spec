@@ -1,14 +1,14 @@
-%global commit_firmware_short bf5201e
-%global commit_firmware_long  bf5201e9682bf36370bc31d26b37fd4d84e1cfca
-%global commit_linux_short 883de20
-%global commit_linux_long  883de20e54e16f89a878c9957fd265e352ebf5c3
+%global commit_firmware_short 509beaa
+%global commit_firmware_long  509beaab0e102cf6decf209922669700c9ac5576
+%global commit_linux_short a599f69
+%global commit_linux_long  a599f69212b051db4cd00a02f9312dc897beba70
 
 %define Arch arm
 %define local_version v7
 %define extra_version 1
 
 Name:           raspberrypi2
-Version:        4.9.13
+Version:        4.9.14
 Release:        %{local_version}.%{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -83,7 +83,7 @@ perl -p -i -e "s/^CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=/" arch/%{Arch}/con
 %build
 export KERNEL=kernel7
 make bcm2709_defconfig
-make -j4 zImage modules dtbs
+make %{?_smp_mflags} zImage modules dtbs
 
 %install
 # kernel
@@ -184,6 +184,9 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|tail -1)/boot/overlays/*.dtb* /boot/o
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Wed Mar 15 2017 Jacco Ligthart <jacco@redsleeve.org> - 4.9.14-v7.1.el7
+- update tp version 4.9.14
+
 * Mon Feb 27 2017 Jacco Ligthart <jacco@redsleeve.org> - 4.9.13-v7.1.el7
 - update to version 4.9.13
 
