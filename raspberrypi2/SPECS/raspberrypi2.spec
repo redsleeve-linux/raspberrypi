@@ -1,6 +1,6 @@
 %global commit_firmware_long  f3b0e1f044081f6df8fa74fd523317e2efa402c3
 %global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long  8ebfcb873b7c78772c315f6f5c11b758fdb594bd
+%global commit_linux_long  a9ad627ed581575df069dbefd4dd5f193be5a11f
 %global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
