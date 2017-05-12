@@ -1,13 +1,13 @@
-%global commit_firmware_short 4b79411
-%global commit_firmware_long  4b79411d54bbefb6f89cf1fc76edd7cd4940ec35
-%global commit_linux_short 53460a0
-%global commit_linux_long  53460a0a50f3dd5e60266e945d0ac794ce0eca77
+%global commit_firmware_long  f3b0e1f044081f6df8fa74fd523317e2efa402c3
+%global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
+%global commit_linux_long  8ebfcb873b7c78772c315f6f5c11b758fdb594bd
+%global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
 %define extra_version 1
 
 Name:           raspberrypi
-Version:        4.9.23
+Version:        4.9.27
 Release:        %{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -183,6 +183,9 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|tail -1)/boot/overlays/*.dtb* /boot/o
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Fri May 12 2017 Jacco Ligthart <jacco@redsleeve.org> - 4.9.27-v7.1.el7
+- update to version 4.9.27
+
 * Wed Apr 19 2017 Jacco Ligthart <jacco@redsleeve.org> - 4.9.23-v7.1.el7
 - update to version 4.9.23
 
