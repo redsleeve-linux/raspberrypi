@@ -1,1 +1,1 @@
-SUBSYSTEM=="rtc", KERNEL=="rtc0", SYMLINK+="rtc", OPTIONS+="link_priority=10", TAG+="systemd"
+SUBSYSTEM=="rtc", KERNEL=="rtc0", SYMLINK+="rtc", OPTIONS+="link_priority=10", TAG+="systemd", ENV{SYSTEMD_WANTS}="i2c-rtc.service"
