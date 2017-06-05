@@ -1,6 +1,6 @@
 Name:           raspberrypi-rtc-ds3231
 Version:        0.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Simple service to start the DS3231 RTC at boot on a Pi
 BuildArch:      noarch
 
@@ -38,14 +38,37 @@ cp %{SOURCE1} %{buildroot}/etc/udev/rules.d/
 %doc
 
 %preun
-perl -p -i -e "s/^dtoverlay=i2c-rtc,ds3231//" /boot/config.txt
-systemctl disable i2c-rtc
+case "$1" in
+  0)
+    # This is an un-installation.
+    perl -p -i -e "s/^dtoverlay=i2c-rtc,ds3231//" /boot/config.txt
+    systemctl disable i2c-rtc
+  ;;
+  1)
+    # This is an upgrade.
+    # Do nothing.
+    :
+  ;;
+esac
 
 %post
-echo "dtoverlay=i2c-rtc,ds3231" >> /boot/config.txt
-systemctl enable i2c-rtc
+case "$1" in
+  1)
+    # This is an initial install.
+    echo "dtoverlay=i2c-rtc,ds3231" >> /boot/config.txt
+    systemctl enable i2c-rtc
+  ;;
+  2)
+    # This is an upgrade.
+    # Do nothing.
+    :
+  ;;
+esac
 
 %changelog
+* Mon Jun 05 2017 Jacco Ligthart <jacco@redsleeve.org> - 0.4.2
+- change the preun/post scripts to detect upgrades
+
 * Mon Jun 05 2017 Jacco Ligthart <jacco@redsleeve.org> - 0.4
 - added ENV{SYSTEMD_WANTS} to the udev rules file
 
