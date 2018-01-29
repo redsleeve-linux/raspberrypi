@@ -1,13 +1,13 @@
-%global commit_firmware_long  ecae6f089add7c6bdb9da97b9bcabbb6259bf4d5
+%global commit_firmware_long  80e1fbeb78f9df06701d28c0ed3a3060a3f557ef
 %global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long  e80a8a55ba8512b531c9447d1307378bccc98a40
+%global commit_linux_long  6071d6022278d8b150e6427ba7b16624e0512358
 %global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
 %define extra_version 1
 
 Name:           raspberrypi
-Version:        4.9.69
+Version:        4.9.78
 Release:        %{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -91,7 +91,8 @@ cp -p -v COPYING %{buildroot}/boot/COPYING.linux
 cp -p -v arch/%{Arch}/boot/dts/*.dtb %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot
 cp -p -v arch/%{Arch}/boot/dts/overlays/*.dtb* %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays
 cp -p -v arch/%{Arch}/boot/dts/overlays/README %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays
-scripts/mkknlimg arch/%{Arch}/boot/zImage %{buildroot}/boot/kernel-%{version}-%{release}.img
+#scripts/mkknlimg arch/%{Arch}/boot/zImage %{buildroot}/boot/kernel-%{version}-%{release}.img
+cp -p -v arch/%{Arch}/boot/zImage %{buildroot}/boot/kernel-%{version}-%{release}.img
 make INSTALL_MOD_PATH=%{buildroot} modules_install
 
 # kernel-devel
@@ -183,6 +184,9 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|tail -1)/boot/overlays/*.dtb* /boot/o
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Sat Jan 27 2018 Jacco Ligthart <jacco@redsleeve.org> - 4.9.78-1.el7
+- update to version 4.9.78
+
 * Sun Dec 17 2017 Jacco Ligthart <jacco@redsleeve.org> - 4.9.69-v7.1.el7
 - update to version 4.9.69
 
