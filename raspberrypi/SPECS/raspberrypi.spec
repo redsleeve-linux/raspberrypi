@@ -1,13 +1,13 @@
-%global commit_firmware_long  b1a7f4aea6cbd380319c2849ecc5988f9a4dba70
+%global commit_firmware_long  6a3ac305d65cff090d1a8d4444d12d5c81989ab9
 %global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long a2f34d45809d8685bca1e91989e35746499ac400
+%global commit_linux_long ec05b1a7860dbeee7d3fc3390c4d2ba8ddaeb8a9
 %global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
 %define extra_version 1
 
 Name:           raspberrypi
-Version:        4.9.80
+Version:        4.14.42
 Release:        %{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -53,14 +53,14 @@ This package provides kernel headers and makefiles sufficient to build modules
 against the kernel package.
 
 
-%package kernel-firmware
-Group:          Development/System
-Summary:        Firmware files used by the Linux kernel
-Provides:       kernel-firmware = %{version}-%{release}
+#%package kernel-firmware
+#Group:          Development/System
+#Summary:        Firmware files used by the Linux kernel
+#Provides:       kernel-firmware = %{version}-%{release}
 
-%description kernel-firmware
-Kernel-firmware includes firmware files required for some devices to
-operate.
+#%description kernel-firmware
+#Kernel-firmware includes firmware files required for some devices to
+#operate.
 
 
 %package firmware
@@ -129,7 +129,7 @@ ln -T -s build %{buildroot}/lib/modules/%{version}-%{release}/source --force
 
 # kernel-firmware
 #rm .config
-make INSTALL_FW_PATH=%{buildroot}/lib/firmware firmware_install
+#make INSTALL_FW_PATH=%{buildroot}/lib/firmware firmware_install
 
 # firmware
 #   precompiled GPU firmware and bootloader
@@ -171,9 +171,9 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|tail -1)/boot/overlays/*.dtb* /boot/o
 /usr/src/kernels/%{version}-%{release}
 
 
-%files kernel-firmware
-%defattr(-,root,root)
-/lib/firmware/*
+#%files kernel-firmware
+#%defattr(-,root,root)
+#/lib/firmware/*
 
 
 %files firmware
@@ -184,6 +184,10 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|tail -1)/boot/overlays/*.dtb* /boot/o
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Thu May 24 2018 Jacco Ligthart <jacco@redsleeve.org> - 4.14.42-1.el7
+- update to version 4.14.42
+- stop makeing the kernel-firmware subpackage
+
 * Wed Feb 28 2018 Jacco Ligthart <jacco@redsleeve.org> - 4.9.80-1.el7
 - update to version 4.9.80, probably the last in the 4.9 series
 

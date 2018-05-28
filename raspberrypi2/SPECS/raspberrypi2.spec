@@ -1,14 +1,14 @@
-%global commit_firmware_long  25cf637ccc90d7d2fa37277c807ab33b655bd0f4
+%global commit_firmware_long  6a3ac305d65cff090d1a8d4444d12d5c81989ab9
 %global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long  be97febf4aa42b1d019ad24e7948739da8557f66
+%global commit_linux_long  ec05b1a7860dbeee7d3fc3390c4d2ba8ddaeb8a9
 %global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
 %define local_version v7
-%define extra_version 2
+%define extra_version 1
 
 Name:           raspberrypi2
-Version:        4.9.80
+Version:        4.14.42
 Release:        %{local_version}.%{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -54,14 +54,14 @@ This package provides kernel headers and makefiles sufficient to build modules
 against the kernel package.
 
 
-%package kernel-firmware
-Group:          Development/System
-Summary:        Firmware files used by the Linux kernel
-Provides:       kernel-firmware = %{version}-%{release}
+#%package kernel-firmware
+#Group:          Development/System
+#Summary:        Firmware files used by the Linux kernel
+#Provides:       kernel-firmware = %{version}-%{release}
 
-%description kernel-firmware
-Kernel-firmware includes firmware files required for some devices to
-operate.
+#%description kernel-firmware
+#Kernel-firmware includes firmware files required for some devices to
+#operate.
 
 
 %package firmware
@@ -131,7 +131,7 @@ ln -T -s build %{buildroot}/lib/modules/%{version}-%{release}/source --force
 
 # kernel-firmware
 #rm .config
-make INSTALL_FW_PATH=%{buildroot}/lib/firmware firmware_install
+#make INSTALL_FW_PATH=%{buildroot}/lib/firmware firmware_install
 
 # firmware
 #   precompiled GPU firmware and bootloader
@@ -172,9 +172,9 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|tail -1)/boot/overlays/*.dtb* /boot/o
 /usr/src/kernels/%{version}-%{release}
 
 
-%files kernel-firmware
-%defattr(-,root,root)
-/lib/firmware/*
+#%files kernel-firmware
+#%defattr(-,root,root)
+#/lib/firmware/*
 
 
 %files firmware
@@ -185,6 +185,10 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|tail -1)/boot/overlays/*.dtb* /boot/o
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Thu May 24 2018 Jacco Ligthart <jacco@redsleeve.org> - 4.14.42-v7.1.el7
+- update to version 4.14.42
+- stop makeing the kernel-firmware subpackage
+
 * Fri Mar 16 2018 Jacco Ligthart <jacco@redsleeve.org> - 4.9.80-v7.2.el7
 - update to latest git for raspberry pi 3 B+ support
 
