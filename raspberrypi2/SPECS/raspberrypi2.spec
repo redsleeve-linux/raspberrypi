@@ -1,21 +1,21 @@
-%global commit_firmware_long  1ea87818b323d08e7bc8e74f930952f36f2f61f4
-%global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long  5fa970b00f77803fbae0ea841593c3b7e92da734
-%global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
+%global commit_firmware_long  fd15e0700e45d9b7db83e30696aba299b9f2f31d
+#%global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
+%global commit_linux_long 089ae6dda1d91d39f21e223a6413d552be798bce
+#%global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
 %define local_version v7
 %define extra_version 1
 
 Name:           raspberrypi2
-Version:        4.14.89
+Version:        4.19.27
 Release:        %{local_version}.%{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
 License:        GPLv2
 URL:            https://github.com/raspberrypi/linux
-Source0:        https://github.com/raspberrypi/linux/tarball/%{commit_linux_long}
-Source1:        https://github.com/raspberrypi/firmware/tarball/%{commit_firmware_long}
+Source0:        https://github.com/raspberrypi/linux/archive/%{commit_linux_long}.tar.gz
+Source1:        https://github.com/raspberrypi/firmware/archive/%{commit_firmware_long}.tar.gz
 BuildRequires: kmod, patch, bash, sh-utils, tar
 BuildRequires: bzip2, xz, findutils, gzip, m4, perl, perl-Carp, make, diffutils, gawk
 BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc
@@ -23,6 +23,7 @@ BuildRequires: net-tools, hostname, bc
 BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex xz-devel
 BuildRequires: audit-libs-devel
 BuildRequires: pciutils-devel gettext ncurses-devel
+BuildRequires: openssl-devel
 
 # Compile with SELinux but disable per default
 Patch0:         bcm2709_selinux_config.patch
@@ -75,7 +76,7 @@ including the kernel bootloader.
 
 
 %prep
-%setup -q -n raspberrypi-linux-%{commit_linux_short}
+%setup -q -n linux-%{commit_linux_long}
 %patch0 -p1
 perl -p -i -e "s/^EXTRAVERSION.*/EXTRAVERSION = -%{release}/" Makefile
 perl -p -i -e "s/^CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=/" arch/%{Arch}/configs/bcm2709_defconfig
@@ -89,7 +90,7 @@ make %{?_smp_mflags} zImage modules dtbs
 # kernel
 mkdir -p %{buildroot}/boot/overlays/
 mkdir -p %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays
-cp -p -v COPYING %{buildroot}/boot/COPYING.linux
+cp -p -v COPYING %{buildroot}/boot/COPYING.linux-4.19
 cp -p -v arch/%{Arch}/boot/dts/*.dtb %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot
 cp -p -v arch/%{Arch}/boot/dts/overlays/*.dtb* %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays
 cp -p -v arch/%{Arch}/boot/dts/overlays/README %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays
@@ -136,11 +137,11 @@ ln -T -s build %{buildroot}/lib/modules/%{version}-%{release}/source --force
 # firmware
 #   precompiled GPU firmware and bootloader
 pushd %{buildroot}
-tar -xf %{_sourcedir}/%{commit_firmware_long} \
-    raspberrypi-firmware-%{commit_firmware_short}/boot/start* \
-    raspberrypi-firmware-%{commit_firmware_short}/boot/fixup* \
-    raspberrypi-firmware-%{commit_firmware_short}/boot/LICENCE.broadcom \
-    raspberrypi-firmware-%{commit_firmware_short}/boot/bootcode.bin \
+tar -xf %{_sourcedir}/%{commit_firmware_long}.tar.gz \
+    firmware-%{commit_firmware_long}/boot/start* \
+    firmware-%{commit_firmware_long}/boot/fixup* \
+    firmware-%{commit_firmware_long}/boot/LICENCE.broadcom \
+    firmware-%{commit_firmware_long}/boot/bootcode.bin \
     --strip-components=1
 popd
 
@@ -153,19 +154,22 @@ popd
 /boot/overlays/
 /usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays/*
 %attr(0755,root,root) /boot/kernel-%{version}-%{release}.img
-%doc /boot/COPYING.linux
+%doc /boot/COPYING.linux-4.19
 
 
-%post kernel
+%posttrans kernel
 cp /boot/kernel-%{version}-%{release}.img /boot/kernel7.img
 cp /usr/share/%{name}-kernel/%{version}-%{release}/boot/*.dtb /boot/
 cp /usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays/*.dtb* /boot/overlays/
+cp /usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays/README /boot/overlays/
 #/usr/sbin/dracut /boot/initramfs-%{version}-%{release}.img %{version}-%{release}
 
 %postun kernel
-cp $(ls -1 /boot/kernel-*-*|tail -1) /boot/kernel7.img
-cp $(ls -1d /usr/share/%{name}-kernel/*-*/|tail -1)/boot/*.dtb /boot/
-cp $(ls -1d /usr/share/%{name}-kernel/*-*/|tail -1)/boot/overlays/*.dtb* /boot/overlays/
+cp $(ls -1 /boot/kernel-*-*|sort -V|tail -1) /boot/kernel7.img
+cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/*.dtb /boot/
+cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/*.dtb* /boot/overlays/
+cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/README /boot/overlays/
+
 
 %files kernel-devel
 %defattr(-,root,root)
@@ -185,6 +189,14 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|tail -1)/boot/overlays/*.dtb* /boot/o
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Sat Mar 09 2019 Jacco Ligthart <jacco@redsleeve.org> - 4.19.27-v7.1.el7
+- update to version 4.19.27
+- added 'sort -V' to the scripts
+- changed download location from 'tarball' to 'archive'
+- moves from 'post' script to 'posttrans'
+- moved 'COPYING.linux' to 'COPYING.linux-4.19'
+- added 'README' to the overlays dir
+
 * Thu Dec 20 2018 Jacco Ligthart <jacco@redsleeve.org> - 4.14.89-v7.1.el7
 - update to version 4.14.89
 
