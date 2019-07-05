@@ -1,6 +1,6 @@
-%global commit_firmware_long  fd15e0700e45d9b7db83e30696aba299b9f2f31d
+%global commit_firmware_long  bcf40b5c2b94178c7564fb451098d44968e44af5
 #%global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long 089ae6dda1d91d39f21e223a6413d552be798bce
+%global commit_linux_long e8a66b4f610b3a20bae8f706256d230135916c26
 #%global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
@@ -8,7 +8,7 @@
 %define extra_version 1
 
 Name:           raspberrypi2
-Version:        4.19.27
+Version:        4.19.56
 Release:        %{local_version}.%{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -189,6 +189,12 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/README
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Fri Jun 28 2019 Jacco Ligthart <jacco@redsleeve.org> - 4.19.56-v7.1.el7
+- update to version 4.19.56
+
+* Sun May 19 2019 Jacco Ligthart <jacco@redsleeve.org> - 4.19.42-v7.1.el7
+- update to version 4.19.42
+
 * Sat Mar 09 2019 Jacco Ligthart <jacco@redsleeve.org> - 4.19.27-v7.1.el7
 - update to version 4.19.27
 - added 'sort -V' to the scripts
