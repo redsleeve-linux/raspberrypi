@@ -1,13 +1,13 @@
-%global commit_firmware_long  f5c626c64874d6e1482edf4a76aa22e5e54be63d
+%global commit_firmware_long c2c6ce8de2dcfd5a6852a32a16003f25188e52ee
 #%global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long 6d8bf28fa4b1ca0a35c0cd1dcb267fb216daf720
+%global commit_linux_long a75a01501330a9be188561b0e9da1da6da372eea
 #%global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
 %define extra_version 1
 
 Name:           raspberrypi
-Version:        4.19.75
+Version:        4.19.113
 Release:        %{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -188,6 +188,9 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/README
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Fri Apr 03 2020 Jacco Ligthart <jacco@redsleeve.org> - 4.19.113-1.el7
+- update to version 4.19.113
+
 * Sat Sep 28 2019 Jacco Ligthart <jacco@redsleeve.org> - 4.19.75-1.el7
 - update to version 4.19.75
 
