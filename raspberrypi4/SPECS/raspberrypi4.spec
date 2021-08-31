@@ -1,6 +1,6 @@
-%global commit_firmware_long bff705fffe59ad3eea33999beb29c3f26408de40
+%global commit_firmware_long f11bc1321a2747b00be83ca7169af0bfe601d376
 #%global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long b8681a08ba16b15cc9f010bef2a24ffac0b054d1
+%global commit_linux_long 24ec7d4a9df72cba26fbb0e0ba97cdd3731d0ce7
 #%global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
@@ -8,7 +8,7 @@
 %define extra_version 1
 
 Name:           raspberrypi4
-Version:        5.4.77
+Version:        5.10.14
 Release:        %{local_version}.%{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -18,12 +18,13 @@ Source0:        https://github.com/raspberrypi/linux/archive/%{commit_linux_long
 Source1:        https://github.com/raspberrypi/firmware/archive/%{commit_firmware_long}.tar.gz
 BuildRequires: kmod, patch, bash, sh-utils, tar
 BuildRequires: bzip2, xz, findutils, gzip, m4, perl, perl-Carp, make, diffutils, gawk
-BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc
+BuildRequires: redhat-rpm-config, hmaccalc
 BuildRequires: net-tools, hostname, bc
 BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex xz-devel
 BuildRequires: audit-libs-devel
 BuildRequires: pciutils-devel gettext ncurses-devel
 BuildRequires: openssl-devel
+BuildRequires: devtoolset-7-build devtoolset-7-gcc
 
 # Compile with SELinux but disable per default
 Patch0:         bcm2711_selinux_config.patch
@@ -72,6 +73,7 @@ perl -p -i -e "s/^EXTRAVERSION.*/EXTRAVERSION = -%{release}/" Makefile
 perl -p -i -e "s/^CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=/" arch/%{Arch}/configs/bcm2711_defconfig
 
 %build
+%{enable_devtoolset7}
 export KERNEL=kernel7l
 make bcm2711_defconfig
 make %{?_smp_mflags} zImage modules dtbs
@@ -80,7 +82,7 @@ make %{?_smp_mflags} zImage modules dtbs
 # kernel
 mkdir -p %{buildroot}/boot/overlays/
 mkdir -p %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays
-cp -p -v COPYING %{buildroot}/boot/COPYING.linux-4.19
+cp -p -v COPYING %{buildroot}/boot/COPYING.linux-5.10
 cp -p -v arch/%{Arch}/boot/dts/*.dtb %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot
 cp -p -v arch/%{Arch}/boot/dts/overlays/*.dtb* %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays
 cp -p -v arch/%{Arch}/boot/dts/overlays/README %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays
@@ -138,7 +140,7 @@ popd
 /boot/overlays/
 /usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays/*
 %attr(0755,root,root) /boot/kernel-%{version}-%{release}.img
-%doc /boot/COPYING.linux-4.19
+%doc /boot/COPYING.linux-5.10
 
 
 %posttrans kernel
@@ -167,6 +169,11 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/README
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Fri Feb 12 2021 Jacco Ligthart <jacco@redsleeve.org> - 5.10.14-v7l.1.el7
+- update to version 5.10.14
+- changed to gcc from devtools-7
+- moved COPYING file to COPYING-5.10
+
 * Sun Nov 22 2020 Jacco Ligthart <jacco@redsleeve.org> - 5.4.77-v7l.1.el7
 - update to version 5.4.77
 
