@@ -1,6 +1,6 @@
-%global commit_firmware_long  f11bc1321a2747b00be83ca7169af0bfe601d376
+%global commit_firmware_long  ac362357ef910d2fd2b688abef5e5fbb875d98a5
 #%global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long 24ec7d4a9df72cba26fbb0e0ba97cdd3731d0ce7
+%global commit_linux_long e4cb65cf23c78b4912786aaf8467aa215d4e1d88
 #%global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
@@ -8,7 +8,7 @@
 %define extra_version 1
 
 Name:           raspberrypi2
-Version:        5.10.14
+Version:        5.10.60
 Release:        %{local_version}.%{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -192,6 +192,9 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/README
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Tue Aug 31 2021 Jacco Ligthart <jacco@redsleeve.org> - 5.10.60-v7.1.el7
+- update to version 5.10.60
+
 * Fri Feb 12 2021 Jacco Ligthart <jacco@redsleeve.org> - 5.10.14-v7.1.el7
 - update to version 5.10.14
 - changed to gcc from devtools-7
