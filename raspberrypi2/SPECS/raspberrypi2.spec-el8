@@ -1,6 +1,6 @@
-%global commit_firmware_long 2595b815bf0e3c2af4b9a6be2151661df1ed4710
+%global commit_firmware_long d146fb66aaf04ce776c1633e17545c6d4ff3777a
 #%global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long ddd39a7758e71196f1ab1682d29ee17806f20019
+%global commit_linux_long 3157603c3925a30c6b26dc8f7a1f2c23f7b7bb55
 #%global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
@@ -10,7 +10,7 @@
 %undefine _debugsource_packages
 
 Name:           raspberrypi2
-Version:        5.15.32
+Version:        5.15.67
 Release:        %{local_version}.%{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -18,7 +18,7 @@ License:        GPLv2
 URL:            https://github.com/raspberrypi/linux
 Source0:        https://github.com/raspberrypi/linux/archive/%{commit_linux_long}.tar.gz
 Source1:        https://github.com/raspberrypi/firmware/archive/%{commit_firmware_long}.tar.gz
-BuildRequires: kmod, patch, bash, sh-utils, tar
+BuildRequires: kmod, patch, bash, coreutils, tar
 BuildRequires: bzip2, xz, findutils, gzip, m4, perl, perl-Carp, make, diffutils, gawk
 BuildRequires: redhat-rpm-config, hmaccalc
 BuildRequires: net-tools, hostname, bc
@@ -197,6 +197,9 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/README
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Wed Sep 14 2022 Jacco Ligthart <jacco@redsleeve.org> - 5.15.67-v7.1.el8
+- update to version 5.15.67
+
 * Thu Apr 07 2022 Jacco Ligthart <jacco@redsleeve.org> - 5.15.32-v7.1.el8
 - update to version 5.15.32
 
