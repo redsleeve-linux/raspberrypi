@@ -1,6 +1,6 @@
-%global commit_firmware_long d146fb66aaf04ce776c1633e17545c6d4ff3777a
+%global commit_firmware_long a7f7e2da955ef01b50516ea9722f6126e8d521a8
 #%global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long 3157603c3925a30c6b26dc8f7a1f2c23f7b7bb55
+%global commit_linux_long b9d2d1862aa5b798cecb87a95d970ad34a4aebc0
 #%global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
@@ -9,7 +9,7 @@
 %undefine _debugsource_packages
 
 Name:           raspberrypi
-Version:        5.15.67
+Version:        6.1.35
 Release:        %{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -195,6 +195,9 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/README
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Sun Jul 02 2023 Jacco Ligthart <jacco@redsleeve.org> - 6.1.35-1.el8
+- update to version 6.1.35
+
 * Wed Sep 14 2022 Jacco Ligthart <jacco@redsleeve.org> - 5.15.32-1.el8
 - update to version 5.15.67
 

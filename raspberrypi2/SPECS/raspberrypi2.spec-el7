@@ -1,6 +1,6 @@
-%global commit_firmware_long 2595b815bf0e3c2af4b9a6be2151661df1ed4710
+%global commit_firmware_long a7f7e2da955ef01b50516ea9722f6126e8d521a8
 #%global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long    ddd39a7758e71196f1ab1682d29ee17806f20019
+%global commit_linux_long    b9d2d1862aa5b798cecb87a95d970ad34a4aebc0
 ##%global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
 
 %define Arch arm
@@ -8,7 +8,7 @@
 %define extra_version 1
 
 Name:           raspberrypi2
-Version:        5.15.32
+Version:        6.1.35
 Release:        %{local_version}.%{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -81,6 +81,7 @@ including the kernel bootloader.
 %patch0 -p1
 perl -p -i -e "s/^EXTRAVERSION.*/EXTRAVERSION = -%{release}/" Makefile
 perl -p -i -e "s/^CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=/" arch/%{Arch}/configs/bcm2709_defconfig
+rm scripts/generate_rust_analyzer.py
 
 %build
 %{enable_devtoolset7}
@@ -192,6 +193,10 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/README
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Sun Jul 02 2023 Jacco Ligthart <jacco@redsleeve.org> - 6.1.35-v7.1.el7
+- removed generate_rust_analyzer.py - it broke the build by not being python2 compatible
+- update to version 6.1.35
+
 * Thu Apr 07 2022 Jacco Ligthart <jacco@redsleeve.org> - 5.15.32-v7.1.el7
 - update to version 5.15.32
 
