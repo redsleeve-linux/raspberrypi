@@ -1,16 +1,14 @@
-%global commit_firmware_long a7f7e2da955ef01b50516ea9722f6126e8d521a8
-#%global commit_firmware_short %(c=%{commit_firmware_long}; echo ${c:0:7})
-%global commit_linux_long b9d2d1862aa5b798cecb87a95d970ad34a4aebc0
-#%global commit_linux_short %(c=%{commit_linux_long}; echo ${c:0:7})
+%global commit_firmware_long 9995946dce284505d3dd46c7563d74a691f38a70
+%global commit_linux_long    2e071057fded90e789c0101498e45a1778be93fe
 
 %define Arch arm
 %define local_version v7
 %define extra_version 1
 
-%undefine _debugsource_packages
+%global debug_package %{nil}
 
 Name:           raspberrypi2
-Version:        6.1.35
+Version:        6.6.78
 Release:        %{local_version}.%{extra_version}%{?dist}
 Summary:        Specific kernel and bootcode for Raspberry Pi
 
@@ -27,7 +25,6 @@ BuildRequires: audit-libs-devel
 BuildRequires: pciutils-devel gettext ncurses-devel
 BuildRequires: openssl-devel
 BuildRequires: python3-devel /usr/bin/pathfix.py
-#BuildRequires: devtoolset-7-build devtoolset-7-gcc
 
 # Compile with SELinux but disable per default
 Patch0:         bcm2709_selinux_config.patch
@@ -59,16 +56,6 @@ This package provides kernel headers and makefiles sufficient to build modules
 against the kernel package.
 
 
-#%package kernel-firmware
-#Group:          Development/System
-#Summary:        Firmware files used by the Linux kernel
-#Provides:       kernel-firmware = %{version}-%{release}
-
-#%description kernel-firmware
-#Kernel-firmware includes firmware files required for some devices to
-#operate.
-
-
 %package firmware
 Summary:        GPU firmware for the Raspberry Pi computer
 License:        Redistributable, with restrictions; see LICENSE.broadcom
@@ -86,20 +73,17 @@ perl -p -i -e "s/^EXTRAVERSION.*/EXTRAVERSION = -%{release}/" Makefile
 perl -p -i -e "s/^CONFIG_LOCALVERSION=.*/CONFIG_LOCALVERSION=/" arch/%{Arch}/configs/bcm2709_defconfig
 
 %build
-#%{enable_devtoolset7}
 export KERNEL=kernel7
 make bcm2709_defconfig
 make %{?_smp_mflags} zImage modules dtbs
 
 %install
 # kernel
-mkdir -p %{buildroot}/boot/overlays/
-mkdir -p %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays
-cp -p -v COPYING %{buildroot}/boot/COPYING.linux-5.10
-cp -p -v arch/%{Arch}/boot/dts/*.dtb %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot
-cp -p -v arch/%{Arch}/boot/dts/overlays/*.dtb* %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays
+mkdir -p %{buildroot}/boot/
+cp -p -v COPYING %{buildroot}/boot/COPYING.linux-6.6
+mkdir -p %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot
+make INSTALL_DTBS_PATH=%{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot dtbs_install
 cp -p -v arch/%{Arch}/boot/dts/overlays/README %{buildroot}/usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays
-#scripts/mkknlimg arch/%{Arch}/boot/zImage %{buildroot}/boot/kernel-%{version}-%{release}.img
 cp -p -v arch/%{Arch}/boot/zImage %{buildroot}/boot/kernel-%{version}-%{release}.img
 make INSTALL_MOD_PATH=%{buildroot} modules_install
 
@@ -158,25 +142,17 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}" %{buildroot}$DevelDir/scripts/
 /lib/modules/%{version}-%{release}
 /usr/share/%{name}-kernel/%{version}-%{release}
 /usr/share/%{name}-kernel/%{version}-%{release}/boot
-/usr/share/%{name}-kernel/%{version}-%{release}/boot/*.dtb
-/boot/overlays/
-/usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays/*
 %attr(0755,root,root) /boot/kernel-%{version}-%{release}.img
-%doc /boot/COPYING.linux-5.10
+%doc /boot/COPYING.linux-6.6
 
 
 %posttrans kernel
-cp /boot/kernel-%{version}-%{release}.img /boot/kernel7.img
-cp /usr/share/%{name}-kernel/%{version}-%{release}/boot/*.dtb /boot/
-cp /usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays/*.dtb* /boot/overlays/
-cp /usr/share/%{name}-kernel/%{version}-%{release}/boot/overlays/README /boot/overlays/
-#/usr/sbin/dracut /boot/initramfs-%{version}-%{release}.img %{version}-%{release}
+cp -a /boot/kernel-%{version}-%{release}.img /boot/kernel7.img
+cp -a /usr/share/%{name}-kernel/%{version}-%{release}/boot/* /boot/
 
 %postun kernel
 cp $(ls -1 /boot/kernel-*-*|sort -V|tail -1) /boot/kernel7.img
-cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/*.dtb /boot/
-cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/*.dtb* /boot/overlays/
-cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/README /boot/overlays/
+cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/* /boot/
 
 
 %files kernel-devel
@@ -197,6 +173,16 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/README
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Sat Mar 01 2025 Jacco Ligthart <jacco@redsleeve.org> - 6.6.78-v7.1.el9
+- update to version 6.6.78
+- reenable SELINUX, it was off in the other 6.6 versions
+
+* Sun Jan 26 2025 Jacco Ligthart <jacco@redsleeve.org> - 6.6.74-v7.1.el9
+- update to version 6.6.74
+
+* Sun Oct 06 2024 Jacco Ligthart <jacco@redsleeve.org> - 6.6.54-v7.1.el9
+- update to version 6.6.54
+
 * Sun Jul 02 2023 Jacco Ligthart <jacco@redsleeve.org> - 6.1.35-v7.1.el8
 - update to version 6.1.35
 
