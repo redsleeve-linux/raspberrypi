@@ -1,1 +1,1 @@
-raspberrypi2.spec-el8
+raspberrypi2.spec-el9

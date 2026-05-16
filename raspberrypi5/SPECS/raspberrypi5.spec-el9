@@ -1,5 +1,5 @@
-%global commit_firmware_long 9995946dce284505d3dd46c7563d74a691f38a70
-%global commit_linux_long    2e071057fded90e789c0101498e45a1778be93fe
+%global commit_firmware_long 8afbe608658d2ad0093df191afb6135d6a8326bc
+%global commit_linux_long    5341e6a36944546b4edf717d5a116ebdfb997743
 
 %define Arch arm64
 %define local_version v8
@@ -9,7 +9,7 @@
 %global debug_package %{nil}
 
 Name:           raspberrypi5
-Version:        6.6.78
+Version:        6.12.67
 Release:        %{local_version}.%{extra_version}%{?dist}
 BuildArch:      noarch
 Summary:        Specific kernel and bootcode for Raspberry Pi
@@ -165,5 +165,8 @@ cp $(ls -1d /usr/share/%{name}-kernel/*-*/|sort -V|tail -1)/boot/overlays/* /boo
 %doc /boot/LICENCE.broadcom
 
 %changelog
+* Wed Feb 04 2026 Jacco Ligthart <jacco@redsleeve.org> - 6.12.67-v8.1.el9
+- update to version 6.12.67
+
 * Fri Apr 04 2025 Jacco Ligthart <jacco@redsleeve.org> - 6.6.78-v8.1.el9
 - first release for rpi 5 

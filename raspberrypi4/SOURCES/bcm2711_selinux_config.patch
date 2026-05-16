@@ -1,15 +1,14 @@
---- a/arch/arm/configs/bcm2711_defconfig	2025-01-24 18:05:44.000000000 +0100
-+++ b/arch/arm/configs/bcm2711_defconfig	2025-02-18 21:50:11.492899833 +0100
-@@ -1596,8 +1596,11 @@
- CONFIG_DLM=m
+--- a/arch/arm/configs/bcm2711_defconfig	2026-01-30 10:33:40.000000000 +0100
++++ b/arch/arm/configs/bcm2711_defconfig	2026-02-04 22:17:58.868132151 +0100
+@@ -1648,8 +1648,10 @@
+ CONFIG_UNICODE=m
  CONFIG_KEY_DH_OPERATIONS=y
  CONFIG_SECURITY=y
-+CONFIG_LSM_MMAP_MIN_ADDR=32768
 +CONFIG_SECURITY_SELINUX=y
 +CONFIG_SECURITY_SELINUX_BOOTPARAM=y
  CONFIG_SECURITY_APPARMOR=y
 -CONFIG_LSM=""
-+CONFIG_LSM="lockdown,yama,integrity,selinux,bpf"
++CONFIG_LSM="landlock,lockdown,yama,integrity,selinux,bpf"
  CONFIG_CRYPTO_USER=m
  CONFIG_CRYPTO_AES=m
  CONFIG_CRYPTO_CAST5=m
